@@ -1,0 +1,62 @@
+﻿@inject IJSRuntime jsRuntime
+
+<script>
+    window.downloadFileFromStream = async (fileName, contentStreamReference) => {
+        const arrayBuffer = await contentStreamReference.arrayBuffer();
+        const blob = new Blob([arrayBuffer]);
+        const url = URL.createObjectURL(blob);
+        const anchorElement = document.createElement('a');
+        anchorElement.href = url;
+        anchorElement.download = fileName ?? '';
+        anchorElement.click();
+        anchorElement.remove();
+        URL.revokeObjectURL(url);
+    }
+</script>
+
+<button class="btn btn-primary" @onclick="OnClickCallback">@ButtonText</button>
+
+
+
+@code {
+
+    [Parameter]
+    public string ButtonText { get; set; } = "Download File";
+    [Parameter]
+    public EventCallback<MouseEventArgs> OnClickCallback { get; set; }
+    // [Parameter]
+    // public string FileName { get; set; } = string.Empty;
+    // [Parameter]
+    // public Stream Stream { get; set; }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            // This JS method can be found in the ComponentMethods.js file
+            //jsRuntime.InvokeVoidAsync("focusOnElement", InputToFocus);
+        }
+    }
+
+    // private Stream GetFileStream()
+    // {
+    //     var randomBinaryData = new byte[50 * 1024];
+    //     var fileStream = new MemoryStream(randomBinaryData);
+
+    //     return fileStream;
+    // }
+
+    // public async Task DownloadFileFromStream()
+    // {
+    //     DotNetStreamReference streamRef = new DotNetStreamReference(stream: Stream);
+
+    //     await jsRuntime.InvokeVoidAsync("downloadFileFromStream", FileName, streamRef);
+    // }
+
+    public async Task DownloadFileFromStream(string fileName, Stream stream)
+    {
+        DotNetStreamReference streamRef = new DotNetStreamReference(stream: stream);
+
+        await jsRuntime.InvokeVoidAsync("downloadFileFromStream", fileName, streamRef);
+    }
+}

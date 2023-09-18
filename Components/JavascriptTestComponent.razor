@@ -1,0 +1,76 @@
+﻿@inject IJSRuntime jsRuntime
+<div class="container">
+    <div class="row pt-2">
+        <div class="col-md-12 d-flex justify-content-left">
+            <h3>Javascript Test Component</h3>
+        </div>
+    </div>
+    <div class="row pt-2">
+        <div class="col-md-12 d-flex justify-content-left">
+            <button class="btn btn-primary" @onclick="Alert">Test Alert Method</button>
+        </div>
+    </div>
+    <div class="row pt-2">
+        <div class="col-md-12 pt-2 d-flex justify-content-left">
+            <input @bind=QuestionText />
+            <button class="btn btn-warning" @onclick="AskQuestion">Ask Question</button>
+        </div>
+        <div class="col-md-12 pt-2 d-flex justify-content-left">
+            the answer was: <span id="answerSpan"></span>
+        </div>
+    </div>
+    <div class="row pt-2">
+        <div class="col-md-12 pt-2 d-flex justify-content-left">
+            <h3>Please Focus</h3>
+        </div>
+        <div class="col-md-12 pt-2 d-flex justify-content-left">
+            <input @ref=InputToFocus />
+        </div>
+        <div class="col-md-12 pt-2 d-flex justify-content-left">
+            <button class="btn btn-danger" @onclick="AsyncFocus">Focus!</button>
+        </div>
+    </div>
+</div>
+
+@code {
+
+    [Parameter]
+    public string LabelText { get; set; } = "Phone Number:";
+    [Parameter]
+    public string PhoneNumber { get; set; } = string.Empty;
+
+    private ElementReference InputToFocus { get; set; }
+
+    private string QuestionText { get; set; } = string.Empty;
+    
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            // This JS method can be found in the ComponentMethods.js file
+            //jsRuntime.InvokeVoidAsync("focusOnElement", InputToFocus);
+        }
+    }
+
+    public async Task Alert()
+    {
+        // This JS method can be found in the ComponentMethods.js file
+        await jsRuntime.InvokeVoidAsync("createAlert", "Parameter worked");
+    }
+
+    public async Task AskQuestion()
+    {
+        // This JS method can be found in the ComponentMethods.js file
+        string answerTest = await jsRuntime.InvokeAsync<string>("createPrompt", QuestionText);
+
+        // This JS method can be found in the ComponentMethods.js file
+        await jsRuntime.InvokeVoidAsync("setElementTextByID", "answerSpan", answerTest);
+    }
+
+    public async Task AsyncFocus()
+    {
+        // This JS method can be found in the ComponentMethods.js file
+        await jsRuntime.InvokeVoidAsync("focusOnElement", InputToFocus);
+    }
+}

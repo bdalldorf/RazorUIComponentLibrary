@@ -1,0 +1,39 @@
+﻿@inject IJSRuntime jsRuntime
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12 d-flex justify-content-left">
+            <label>@LabelText</label>
+        </div>
+        <div class="col-md-12 d-flex justify-content-left">
+            <div class="form-outline mb-3" style="width: 100%; max-width: 22rem">
+                <input type="text" @ref=SSNNumberInput @bind="SSNNumber" id=" ssnNumber" class="form-control" placeholder="xxx-xx-xxxx" />
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+
+    [Parameter]
+    public string LabelText { get; set; } = "SSN:";
+    [Parameter]
+    public string SSNNumber { get; set; } = string.Empty;
+
+    private ElementReference SSNNumberInput;
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            // This JS method can be found in the ComponentMethods.js file
+            jsRuntime.InvokeVoidAsync("addSSNNumberMask", SSNNumberInput);
+        }
+    }
+
+    public async Task AsyncFocus()
+    {
+        // This JS method can be found in the ComponentMethods.js file
+        await jsRuntime.InvokeVoidAsync("focusOnElement", SSNNumberInput);
+    }
+}

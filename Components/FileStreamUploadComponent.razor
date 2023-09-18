@@ -1,0 +1,64 @@
+﻿@inject IJSRuntime jsRuntime
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12 d-flex">
+            <h5>Select Image</h5>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <InputFile OnChange="HandleFileSelected" class="form-control" accept="image/png, image/jpeg" />
+        </div>
+        <div class="col-md-3">
+            <button class="btn btn-primary" @onclick="OnClickCallback">@ButtonText</button>
+        </div>
+@*         <div class="col-md-3 d-flex">
+            <img src="@ImageDataURL" alt="Example PNG Image" style="width:100%; max-width:100px; height:auto;">
+        </div> *@
+    </div>
+</div>
+
+@code {
+
+    [Parameter]
+    public string ButtonText { get; set; } = "Upload File";
+    [Parameter]
+    public EventCallback<MouseEventArgs> OnClickCallback { get; set; }
+
+    public MemoryStream MemoryStream { get; set; }
+    public string ImageDataURL = "./icon-192.png";
+    private IReadOnlyList<IBrowserFile> _SelectedFiles;
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            // This JS method can be found in the ComponentMethods.js file
+            //jsRuntime.InvokeVoidAsync("focusOnElement", InputToFocus);
+        }
+    }
+
+    private async Task HandleFileSelected(InputFileChangeEventArgs eventArgs)
+    {
+        const int MaxAllowedFiles = 5;
+        _SelectedFiles = eventArgs.GetMultipleFiles(MaxAllowedFiles);
+
+        // Leave this code in case I want to use the FileStream
+        // await using FileStream fileStream = new("testimage.png", FileMode.Create);
+        // await _SelectedFiles[0].OpenReadStream().CopyToAsync(fileStream);
+
+        await using MemoryStream memoryStream = new MemoryStream();
+        await _SelectedFiles[0].OpenReadStream().CopyToAsync(memoryStream);
+
+        MemoryStream = memoryStream;
+    }
+
+    public string LoadFileOnScreen()
+    {
+        string imageSource = Convert.ToBase64String(MemoryStream.ToArray());
+        ImageDataURL = string.Format("data:image/png;base64,{0}", imageSource);
+
+        return ImageDataURL;
+    }
+}
