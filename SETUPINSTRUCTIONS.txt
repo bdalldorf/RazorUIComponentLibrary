@@ -1,16 +1,12 @@
 ﻿Add the following lines to the _Imports.razor file of the project that is using this library
 
 -------
-
 @using RazorUIComponentLibrary
 @using RazorUIComponentLibrary.Components
-
 -------
 
 Add the following line In the Index.html or _Main.cshtml of the project that is using this library
 
 -------
-
 <script src="_content/RazorUIComponentLibrary/js/ComponentMethods.js"></script>
-
 -------
