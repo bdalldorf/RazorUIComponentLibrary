@@ -5,7 +5,7 @@
 @using RazorUIComponentLibrary.Components
 -------
 
-Add the following line In the Index.html or _Main.cshtml of the project that is using this library
+Add the following line In the Index.razor or _Host.cshtml of the project that is using this library
 
 -------
 <script src="_content/RazorUIComponentLibrary/js/ComponentMethods.js"></script>
