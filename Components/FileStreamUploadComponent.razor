@@ -1,21 +1,13 @@
 ﻿@inject IJSRuntime jsRuntime
 
 <div class="container">
-    <div class="row">
-        <div class="col-md-12 d-flex">
-            <h5>Select Image</h5>
+    <div class="row justify-content-left">
+        <div class="col col-lg p-2">
+            <InputFile OnChange="HandleFileSelected" class="form-control" />
         </div>
-    </div>
-    <div class="row">
-        <div class="col-md-6">
-            <InputFile OnChange="HandleFileSelected" class="form-control" accept="image/png, image/jpeg" />
-        </div>
-        <div class="col-md-3">
+        <div class="col-sm-auto p-2 d-flex justify-content-center">
             <button class="btn btn-primary" @onclick="OnClickCallback">@ButtonText</button>
         </div>
-@*         <div class="col-md-3 d-flex">
-            <img src="@ImageDataURL" alt="Example PNG Image" style="width:100%; max-width:100px; height:auto;">
-        </div> *@
     </div>
 </div>
 
