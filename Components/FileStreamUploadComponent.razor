@@ -1,4 +1,7 @@
-﻿@inject IJSRuntime jsRuntime
+﻿@using Microsoft.AspNetCore.Components.Forms;
+@using Microsoft.AspNetCore.Components.Web;
+@using Microsoft.JSInterop;
+@inject IJSRuntime jsRuntime;
 
 <div class="container-fluid">
     <div class="row justify-content-left">
@@ -20,7 +23,6 @@
 
     public MemoryStream MemoryStream { get; set; }
     public string ImageDataURL = "./icon-192.png";
-    private IReadOnlyList<IBrowserFile> _SelectedFiles;
 
     protected override void OnAfterRender(bool firstRender)
     {
@@ -33,23 +35,54 @@
 
     private async Task HandleFileSelected(InputFileChangeEventArgs eventArgs)
     {
-        const int MaxAllowedFiles = 5;
-        _SelectedFiles = eventArgs.GetMultipleFiles(MaxAllowedFiles);
+        int MAXALLOWEDFILESIZE = 30000000; // 30 Megabytes
+        IBrowserFile _SelectedFile;
+        // For Multiple Files
+        // IReadOnlyList<IBrowserFile> _SelectedFiles;
 
-        // Leave this code in case I want to use the FileStream
-        // await using FileStream fileStream = new("testimage.png", FileMode.Create);
-        // await _SelectedFiles[0].OpenReadStream().CopyToAsync(fileStream);
 
-        await using MemoryStream memoryStream = new MemoryStream();
-        await _SelectedFiles[0].OpenReadStream().CopyToAsync(memoryStream);
+        try
+        {
+            _SelectedFile = eventArgs.File;
 
-        MemoryStream = memoryStream;
+            // For Multiple Files
+            // const int MaxAllowedFiles = 5;
+            // _SelectedFiles = eventArgs.GetMultipleFiles(MaxAllowedFiles);
+
+
+            // Leave this code in case I want to use the FileStream
+            // await using FileStream fileStream = new("testimage.png", FileMode.Create);
+            // await _SelectedFiles[0].OpenReadStream().CopyToAsync(fileStream);
+
+            await using MemoryStream memoryStream = new MemoryStream();
+            await _SelectedFile.OpenReadStream(MAXALLOWEDFILESIZE).CopyToAsync(memoryStream);
+
+            MemoryStream = memoryStream;
+        }
+        catch(Exception exception)
+        {
+            // File is too big is the usual issue
+        }
     }
 
     public string LoadFileOnScreen()
     {
-        string imageSource = Convert.ToBase64String(MemoryStream.ToArray());
-        ImageDataURL = string.Format("data:image/png;base64,{0}", imageSource);
+        try
+        {
+            if (MemoryStream != null)
+            {
+                string imageSource = Convert.ToBase64String(MemoryStream.ToArray());
+                ImageDataURL = string.Format("data:image/png;base64,{0}", imageSource);
+            }
+        }
+        catch(Exception exception)
+        {
+
+        }
+        finally
+        {
+            MemoryStream.Flush();
+        }
 
         return ImageDataURL;
     }
