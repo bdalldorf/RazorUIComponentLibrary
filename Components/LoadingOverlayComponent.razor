@@ -1,0 +1,40 @@
+﻿@using Microsoft.JSInterop;
+@using System.Text.Json;
+@using Newtonsoft.Json;
+@using RazorUIComponentLibrary.Components.Models.Javascript_Models;
+@inject IJSRuntime jsRuntime
+
+<div class="loading-state" style="display: none;" @ref=_LoadingComponentMainElement>
+    <div class="loading"></div>
+</div>
+
+@code {
+    private ElementReference _LoadingComponentMainElement { get; set; }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+
+        }
+    }
+
+    public async Task ShowLoadingOverlay(ElementReference elementReference)
+    {
+        //string pageElementPosition = await jsRuntime.InvokeAsync<string>("getElementPositionByElement", elementReference);
+
+        // if (pageElementPosition != null)
+        // {
+        //     DOMRect? dOMRect = JsonConvert.DeserializeObject<DOMRect>(pageElementPosition);
+        // }
+
+        await jsRuntime.InvokeVoidAsync("setElementPositionByElement", _LoadingComponentMainElement, elementReference);
+
+        //await jsRuntime.InvokeVoidAsync("showElementDisplay", _LoadingComponentMainElement);
+    }
+
+    public async Task HideLoadingOverlay(ElementReference elementReference)
+    {
+        await jsRuntime.InvokeVoidAsync("hideElementDisplay", _LoadingComponentMainElement);
+    }
+}

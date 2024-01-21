@@ -3,7 +3,7 @@
 @using Microsoft.JSInterop;
 @inject IJSRuntime jsRuntime;
 
-<div class="container-fluid">
+<div class="container-fluid" @ref=_FileStreamUploadComponentMainElement>
     <div class="row justify-content-left">
         <div class="col col-lg p-2">
             <InputFile OnChange="HandleFileSelected" class="form-control" />
@@ -12,10 +12,10 @@
             <button class="btn btn-primary" @onclick="OnClickCallback">@ButtonText</button>
         </div>
     </div>
+    <LoadingOverlayComponent @ref=_LoadingOverlayComponent />
 </div>
 
 @code {
-
     [Parameter]
     public string ButtonText { get; set; } = "Upload File";
     [Parameter]
@@ -23,6 +23,9 @@
 
     public MemoryStream MemoryStream { get; set; }
     public string ImageDataURL = "./icon-192.png";
+
+    private LoadingOverlayComponent _LoadingOverlayComponent { get; set; }
+    private ElementReference _FileStreamUploadComponentMainElement { get; set; }
 
     protected override void OnAfterRender(bool firstRender)
     {
@@ -53,35 +56,43 @@
             // Leave this code in case I want to use the FileStream
             // await using FileStream fileStream = new("testimage.png", FileMode.Create);
             // await _SelectedFiles[0].OpenReadStream().CopyToAsync(fileStream);
-
             await using MemoryStream memoryStream = new MemoryStream();
             await _SelectedFile.OpenReadStream(MAXALLOWEDFILESIZE).CopyToAsync(memoryStream);
+            //await jsRuntime.InvokeVoidAsync("setElementTextByID", "answerSpan", "");
 
             MemoryStream = memoryStream;
         }
-        catch(Exception exception)
+        catch (Exception exception)
         {
             // File is too big is the usual issue
         }
     }
 
-    public string LoadFileOnScreen()
+    public async Task<string> LoadFileOnScreen()
     {
         try
         {
             if (MemoryStream != null)
             {
+                await _LoadingOverlayComponent.ShowLoadingOverlay(_FileStreamUploadComponentMainElement);
+                
                 string imageSource = Convert.ToBase64String(MemoryStream.ToArray());
                 ImageDataURL = string.Format("data:image/png;base64,{0}", imageSource);
+                Thread.Sleep(3000);
+
+                await _LoadingOverlayComponent.HideLoadingOverlay(_FileStreamUploadComponentMainElement);
             }
         }
-        catch(Exception exception)
+        catch (Exception exception)
         {
 
         }
         finally
         {
-            MemoryStream.Flush();
+            if (MemoryStream != null)
+            {
+                MemoryStream.Flush();
+            }
         }
 
         return ImageDataURL;
