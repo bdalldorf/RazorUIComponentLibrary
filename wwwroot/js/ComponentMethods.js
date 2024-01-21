@@ -12,6 +12,14 @@ function createPrompt(question) {
 
 // DOM ELEMENT FUNCTIONS
 
+function ReturnElementByID(id) {
+    return document.getElementById(id);
+}
+
+function ReturnElementByReference(element) {
+    return element;
+}
+
 function focusOnElement(element) {
     element.focus();
 }
@@ -64,3 +72,36 @@ function addSSNNumberMask(element) {
 }
 
 // END MASKING FUNCTIONS
+
+// LOADING SCREEN OVERLAY FUNCTIONS
+
+// returns the Element position by Element
+function getElementPositionByElement(element) {
+    let clientRect = element.getBoundingClientRect();
+    return JSON.stringify(clientRect);
+}
+
+// returns the Element position by ID
+function getElementPositionByID(id) {
+    let element = document.getElementById(id);;
+    return getElementPositionByElement(element);
+}
+
+function setElementPositionByElement(elementToSet, elementToUse) {
+    let clientRect = elementToUse.getBoundingClientRect();
+
+    elementToSet.style.display = "flex";
+    elementToSet.style.position = "absolute";
+    //elementToSet.style.left = clientRect.x + 'px';
+    // elementToSet.style.top = clientRect.y + 'px';
+}
+
+function showElementDisplay(element) {
+    element.style.display = "flex";
+}
+
+function hideElementDisplay(element) {
+    element.style.display = "none";
+}
+
+// END LOADING SCREEN OVERLAY FUNCTIONS
