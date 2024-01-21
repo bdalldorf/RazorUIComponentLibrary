@@ -1,4 +1,5 @@
-﻿@inject IJSRuntime jsRuntime
+﻿@using Microsoft.JSInterop;
+@inject IJSRuntime jsRuntime
 
 <div class="container">
     <div class="row">
@@ -6,7 +7,7 @@
             <label>@LabelText</label>
         </div>
         <div class="col-md-12 d-flex justify-content-left">
-            <input type="date" @bind="@Date" @ref=CalendarInput style="width:100%;">
+            <input type="date" @bind="@Date" @ref=_CalendarInput style="width:100%;">
         </div>
     </div>
 </div>
@@ -17,11 +18,11 @@
     [Parameter]
     public DateTime Date { get; set; } = DateTime.Now;
 
-    private ElementReference CalendarInput;
+    private ElementReference _CalendarInput;
 
     public async Task AsyncFocus()
     {
         // This JS method can be found in the ComponentMethods.js file
-        await jsRuntime.InvokeVoidAsync("focusOnElement", CalendarInput);
+        await jsRuntime.InvokeVoidAsync("focusOnElement", _CalendarInput);
     }
 }

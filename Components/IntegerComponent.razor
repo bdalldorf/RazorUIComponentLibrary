@@ -6,7 +6,7 @@
             <label>@LabelText</label>
         </div>
         <div class="col-md-12 d-flex justify-content-left">
-            <input type="number" @ref=IntegerInput @bind="@ValueInt" max="" maxlength="9">
+            <input type="number" @ref=_IntegerInput @bind="@ValueInt" max="" maxlength="9">
         </div>
     </div>
 </div>
@@ -17,20 +17,20 @@
     [Parameter]
     public int ValueInt { get; set; } = 0;
 
-    private ElementReference IntegerInput;
+    private ElementReference _IntegerInput;
 
     protected override void OnAfterRender(bool firstRender)
     {
         if (firstRender)
         {
             // This JS method can be found in the ComponentMethods.js file
-            jsRuntime.InvokeVoidAsync("addIntegerMask", IntegerInput);
+            jsRuntime.InvokeVoidAsync("addIntegerMask", _IntegerInput);
         }
     }
 
     public async Task AsyncFocus()
     {
         // This JS method can be found in the ComponentMethods.js file
-        await jsRuntime.InvokeVoidAsync("focusOnElement", IntegerInput);
+        await jsRuntime.InvokeVoidAsync("focusOnElement", _IntegerInput);
     }
 }
