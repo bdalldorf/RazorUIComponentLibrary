@@ -19,6 +19,8 @@
     [Parameter]
     public string ButtonText { get; set; } = "Upload File";
     [Parameter]
+    public bool ShowLoadingOverlay { get; set; } = true;
+    [Parameter]
     public EventCallback<MouseEventArgs> OnClickCallback { get; set; }
 
     public MemoryStream MemoryStream { get; set; }
@@ -74,13 +76,13 @@
         {
             if (MemoryStream != null)
             {
-                await _LoadingOverlayComponent.ShowLoadingOverlay(_FileStreamUploadComponentMainElement);
+                if (ShowLoadingOverlay)
+                    await _LoadingOverlayComponent.ShowLoadingOverlay(_FileStreamUploadComponentMainElement);
                 
                 string imageSource = Convert.ToBase64String(MemoryStream.ToArray());
                 ImageDataURL = string.Format("data:image/png;base64,{0}", imageSource);
                 Thread.Sleep(3000);
 
-                await _LoadingOverlayComponent.HideLoadingOverlay(_FileStreamUploadComponentMainElement);
             }
         }
         catch (Exception exception)
@@ -93,6 +95,9 @@
             {
                 MemoryStream.Flush();
             }
+
+            if (ShowLoadingOverlay)
+                await _LoadingOverlayComponent.HideLoadingOverlay(_FileStreamUploadComponentMainElement);
         }
 
         return ImageDataURL;
