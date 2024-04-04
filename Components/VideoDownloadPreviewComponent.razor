@@ -1,0 +1,114 @@
+﻿@inject IJSRuntime jsRuntime
+@using System.Text;
+@using BDCSharpModels.DataTransferModels.Video
+@using Newtonsoft.Json;
+@using RestSharp;
+
+<div class="row">
+    <div class="col">
+        <div class="card">
+            <h5 class="card-header bg-dark text-white">Thumbnail Image Preview</h5>
+            <div class="card-body" @ref=_FileDownloadImageElement>
+                <div class="row p-2">
+                    <div class="row">
+                        <div class="col-md-12 d-flex justify-content-center"><input @bind="VideoDownloadResponseModel.VideoTitle" placeholder="Video Title ..." alt="Video Title ..." style="width:100%;" /></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 d-flex justify-content-center"><input @bind="VideoDownloadResponseModel.VideoDescription" placeholder="Video Description ..." alt="Video Description ..." style="width:100%;" /></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-2 d-flex justify-content-center"><input @bind="_ImageFrameInSeconds" placeholder="Seconds ..." alt="Seconds ..." maxlength="4" style="width:100%;" /></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-2 d-flex justify-content-center"><input @bind="_ImageFrameWidth" placeholder="Width Of Image ..." alt="Width Of Image ..." maxlength="4" style="width:100%;" /></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-2 d-flex justify-content-center"><input @bind="_ImageFrameHeight" placeholder="Height Of Image ..." alt="Height Of Image ..." maxlength="4" style="width:100%;" /></div>
+                    </div>
+                </div>
+                <div class="row p-2">
+                    <div class="col-md-12 d-flex justify-content-center"><button class="btn btn-primary" @onclick="GetVideoImage">Click for Image Preview</button></div>
+                </div>
+                <div class="row p-2">
+                    <div class="col-md-12 d-flex justify-content-center">
+                        <img src="@ImageDataURL" alt="" style="width:100%; height:auto; max-width:1200px; max-height:1200px;">
+                    </div>
+                </div>
+            </div>
+            <LoadingOverlayComponent @ref=_LoadingOverlayFileDownloadImage />
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public VideoDownloadResponseModel VideoDownloadResponseModel { get; set; } = new VideoDownloadResponseModel();
+
+    private LoadingOverlayComponent _LoadingOverlayFileDownloadImage { get; set; }
+    private ElementReference _FileDownloadImageElement { get; set; }
+
+    public string ImageDataURL = "";
+    private int _ImageFrameInSeconds = 2;
+    private int _ImageFrameWidth = 600;
+    private int _ImageFrameHeight = 800;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await GetVideoImage();
+            StateHasChanged();
+        }
+    }
+
+
+    public async Task GetVideoImage()
+    {
+        try
+        {
+            _LoadingOverlayFileDownloadImage.ShowLoadingOverlay(_FileDownloadImageElement);
+
+            var client = new RestClient();
+            string tempImageURL = VideoDownloadResponseModel.PreviewImageURL;
+            VideoDownloadResponseModel.PreviewImageURL = string.Empty;
+
+            string url = $"https://api.bdalldorf.tech/tiktok/filedownloadimage?videoURL={VideoDownloadResponseModel.WebPageURL}&user=admin&frameInSeconds={_ImageFrameInSeconds}&imageWidth={_ImageFrameWidth}&imgHeight={_ImageFrameHeight}";
+            var request = new RestRequest(url, Method.Get);
+            RestResponse response = client.Execute(request);
+
+            string imageSource = response.Content.Replace("\"", "");
+            ImageDataURL = string.Format("data:image/png;base64,{0}", imageSource);
+
+            await UpdateHTMLPage();
+        }
+        catch (Exception exception)
+        {
+
+        }
+        finally
+        {
+            _LoadingOverlayFileDownloadImage.HideLoadingOverlay(_FileDownloadImageElement);
+        }
+    }
+
+    private async Task UpdateHTMLPage()
+    {
+        try
+        {
+            string url = $"https://api.bdalldorf.tech/tiktok/updatehtmlpage?user=admin";
+            RestRequest request = new RestRequest(url, Method.Post);
+            request.AddBody(VideoDownloadResponseModel);
+
+            RestClient restClient = new RestClient();
+            RestResponse restResponse = restClient.Execute(request);
+        }
+        catch (Exception ex)
+        {
+            string exception = ex.Message;
+        }
+        finally
+        {
+
+        }
+    }
+}
