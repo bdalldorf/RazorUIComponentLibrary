@@ -10,20 +10,35 @@
             <h5 class="card-header bg-dark text-white">Thumbnail Image Preview</h5>
             <div class="card-body" @ref=_FileDownloadImageElement>
                 <div class="row p-2">
-                    <div class="row">
-                        <div class="col-md-12 d-flex justify-content-center"><input @bind="VideoDownloadResponseModel.VideoTitle" placeholder="Video Title ..." alt="Video Title ..." style="width:100%;" /></div>
+                    <div class="row p-2">
+                        <div class="col-12">
+                            <label for="VideoTitle" class="form-label">Title:</label>
+                            <textarea @bind="VideoDownloadResponseModel.VideoTitle" id="VideoTitle" placeholder="Video Title ..." alt="Video Title ..." style="width:100%;" />
+                        </div>
                     </div>
-                    <div class="row">
-                        <div class="col-md-12 d-flex justify-content-center"><input @bind="VideoDownloadResponseModel.VideoDescription" placeholder="Video Description ..." alt="Video Description ..." style="width:100%;" /></div>
+                    <div class="row p-2">
+                        <div class="col-12">
+                            <label for="VideoDescription" class="form-label">Description:</label>
+                            <textarea @bind="VideoDownloadResponseModel.VideoDescription" id="VideoDescription" placeholder="Video Description ..." alt="Video Description ..." style="width:100%;" />
+                        </div>
                     </div>
-                    <div class="row">
-                        <div class="col-md-2 d-flex justify-content-center"><input @bind="_ImageFrameInSeconds" placeholder="Seconds ..." alt="Seconds ..." maxlength="4" style="width:100%;" /></div>
+                    <div class="row p-2">
+                        <div class="col-12">
+                            <label for="VideoSeconds" class="form-label">Preview in Seconds:</label>
+                            <input @bind="_ImageFrameInSeconds" id="VideoSeconds" placeholder="Seconds ..." alt="Seconds ..." maxlength="4" style="width:100%;" />
+                        </div>
                     </div>
-                    <div class="row">
-                        <div class="col-md-2 d-flex justify-content-center"><input @bind="_ImageFrameWidth" placeholder="Width Of Image ..." alt="Width Of Image ..." maxlength="4" style="width:100%;" /></div>
+                    <div class="row p-2">
+                        <div class="col-12">
+                            <label for="VideoWidth" class="form-label">Video Width:</label>
+                            <input @bind="_ImageFrameWidth" id="VideoWidth" placeholder="Width Of Image ..." alt="Width Of Image ..." maxlength="4" style="width:100%;" />
+                        </div>
                     </div>
-                    <div class="row">
-                        <div class="col-md-2 d-flex justify-content-center"><input @bind="_ImageFrameHeight" placeholder="Height Of Image ..." alt="Height Of Image ..." maxlength="4" style="width:100%;" /></div>
+                    <div class="row p-2">
+                        <div class="col-12">
+                            <label for="ImageHeight" class="form-label">Image Height:</label>
+                            <input @bind="_ImageFrameHeight" id="ImageHeight" placeholder="Height Of Image ..." alt="Height Of Image ..." maxlength="4" style="width:100%;" />
+                        </div>
                     </div>
                 </div>
                 <div class="row p-2">
