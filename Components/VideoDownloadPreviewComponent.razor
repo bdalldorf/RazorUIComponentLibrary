@@ -35,9 +35,9 @@
                     </div>
                 </div>
             </div>
-            <LoadingOverlayComponent @ref=_LoadingOverlayFileDownloadImage />
         </div>
     </div>
+    <LoadingOverlayComponent @ref=_LoadingOverlayFileDownloadImage></LoadingOverlayComponent>
 </div>
 
 @code {
@@ -68,15 +68,15 @@
         {
             _LoadingOverlayFileDownloadImage.ShowLoadingOverlay(_FileDownloadImageElement);
 
-            var client = new RestClient();
-            string tempImageURL = VideoDownloadResponseModel.PreviewImageURL;
-            VideoDownloadResponseModel.PreviewImageURL = string.Empty;
+            string url = $"{VideoDownloadResponseModel.APIUpdateVideoImageURL}?videoURL={VideoDownloadResponseModel.WebPageURL}&frameInSeconds={_ImageFrameInSeconds}&imageWidth={_ImageFrameWidth}&imgHeight={_ImageFrameHeight}";
 
-            string url = $"https://api.bdalldorf.tech/tiktok/filedownloadimage?videoURL={VideoDownloadResponseModel.WebPageURL}&user=admin&frameInSeconds={_ImageFrameInSeconds}&imageWidth={_ImageFrameWidth}&imgHeight={_ImageFrameHeight}";
-            var request = new RestRequest(url, Method.Get);
-            RestResponse response = client.Execute(request);
+            RestRequest restRequest = new RestRequest(url, Method.Post);
+            restRequest.AddBody(VideoDownloadResponseModel);
 
-            string imageSource = response.Content.Replace("\"", "");
+            RestClient restClient = new RestClient();
+            RestResponse restResponse = restClient.Execute(restRequest);
+
+            string imageSource = restResponse.Content.Replace("\"", "");
             ImageDataURL = string.Format("data:image/png;base64,{0}", imageSource);
 
             await UpdateHTMLPage();
@@ -95,12 +95,11 @@
     {
         try
         {
-            string url = $"https://api.bdalldorf.tech/tiktok/updatehtmlpage?user=admin";
-            RestRequest request = new RestRequest(url, Method.Post);
-            request.AddBody(VideoDownloadResponseModel);
+            RestRequest restRequest = new RestRequest(VideoDownloadResponseModel.APIUpdateHTMLPageURL, Method.Post);
+            restRequest.AddBody(VideoDownloadResponseModel);
 
             RestClient restClient = new RestClient();
-            RestResponse restResponse = restClient.Execute(request);
+            RestResponse restResponse = restClient.Execute(restRequest);
         }
         catch (Exception ex)
         {
