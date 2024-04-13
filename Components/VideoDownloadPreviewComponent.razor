@@ -25,7 +25,7 @@
                     <div class="row p-2">
                         <div class="col-12">
                             <label for="VideoSeconds" class="form-label">Preview in Seconds:</label>
-                            <input @bind="_ImageFrameInSeconds" id="VideoSeconds" placeholder="Seconds ..." alt="Seconds ..." maxlength="4" style="width:100%;" />
+                            <input @bind="VideoDownloadResponseModel.VideoPreviewStartTime" id="VideoSeconds" placeholder="Seconds ..." alt="Seconds ..." maxlength="4" style="width:100%;" />
                         </div>
                     </div>
                     <div class="row p-2">
@@ -63,14 +63,14 @@
     private ElementReference _FileDownloadImageElement { get; set; }
 
     public string ImageDataURL = "";
-    private int _ImageFrameInSeconds = 2;
-    private int _ImageFrameWidth = 600;
+    private int _ImageFrameWidth = 1200;
     private int _ImageFrameHeight = 800;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
+            VideoDownloadResponseModel.VideoPreviewStartTime = 2;
             await GetVideoImage();
             StateHasChanged();
         }
@@ -83,7 +83,7 @@
         {
             _LoadingOverlayFileDownloadImage.ShowLoadingOverlay(_FileDownloadImageElement);
 
-            string url = $"{VideoDownloadResponseModel.APIUpdateVideoImageURL}?videoURL={VideoDownloadResponseModel.WebPageURL}&frameInSeconds={_ImageFrameInSeconds}&imageWidth={_ImageFrameWidth}&imgHeight={_ImageFrameHeight}";
+            string url = $"{VideoDownloadResponseModel.APIUpdateVideoImageURL}?imageWidth={_ImageFrameWidth}&imgHeight={_ImageFrameHeight}";
 
             RestRequest restRequest = new RestRequest(url, Method.Post);
             restRequest.AddBody(VideoDownloadResponseModel);
