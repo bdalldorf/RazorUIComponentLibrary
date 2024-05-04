@@ -1,4 +1,4 @@
-﻿@inject IJSRuntime jsRuntime
+@inject IJSRuntime jsRuntime
 @using System.Text;
 @using BDCSharpModels.DataTransferModels.Video
 @using Newtonsoft.Json;
@@ -38,6 +38,12 @@
                         <div class="col-12">
                             <label for="ImageHeight" class="form-label">Image Height:</label>
                             <input @bind="_ImageFrameHeight" id="ImageHeight" placeholder="Height Of Image ..." alt="Height Of Image ..." maxlength="4" style="width:100%;" />
+                        </div>
+                    </div>
+                    <div class="row p-2">
+                        <div class="col-12">
+                            <label for="VideoTags" class="form-label">Video Tags:</label>
+                            <input @bind="VideoDownloadResponseModel.VideoFileTags" id="VideoTags" placeholder="Video Tags ..." alt="Video tags" maxlength="100" style="width:100%;" />
                         </div>
                     </div>
                 </div>
