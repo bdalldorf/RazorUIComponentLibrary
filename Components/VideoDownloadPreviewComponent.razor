@@ -16,6 +16,7 @@
                             <textarea @bind="VideoDownloadResponseModel.VideoTitle" id="VideoTitle" placeholder="Video Title ..." alt="Video Title ..." style="width:100%;" />
                         </div>
                     </div>
+                    <button class="btn" @onclick="SwapTitleAndDescription"><i class="fa-solid fa-arrows-rotate fa-2x"></i></button>
                     <div class="row p-2">
                         <div class="col-12">
                             <label for="VideoDescription" class="form-label">Description:</label>
@@ -130,5 +131,14 @@
         {
 
         }
+    }
+
+    private void SwapTitleAndDescription()
+    {
+        string videoTitle = VideoDownloadResponseModel.VideoTitle;
+        VideoDownloadResponseModel.VideoTitle = VideoDownloadResponseModel.VideoDescription;
+        VideoDownloadResponseModel.VideoDescription = videoTitle;
+
+        UpdateHTMLPage();
     }
 }
