@@ -28,6 +28,37 @@ function setElementTextByID(id, text) {
     document.getElementById(id).innerText = text;
 }
 
+function scrollToBottomOfDiv(element) {
+    element.scrollTop = element.scrollHeight;
+}
+
+function hasClassByElement(element, className) {
+    if (element.classList)
+        return element.classList.contains(className);
+    return !!element.className.match(new RegExp('(\\s|^)' + className + '(\\s|$)'));
+}
+
+function addClassByID(id, className) {
+    let element = ReturnElementByID(id);
+    if (element.classList)
+        element.classList.add(className)
+    else if (!hasClassByElement(element, className))
+        element.className += " " + className;
+}
+
+function removeClassByID(id, className) {
+    if (id != "") {
+        let element = ReturnElementByID(id);
+
+        if (element.classList)
+            element.classList.remove(className)
+        else if (hasClassByElement(element, className)) {
+            var reg = new RegExp('(\\s|^)' + className + '(\\s|$)');
+            element.className = element.className.replace(reg, ' ');
+        }
+    }
+}
+
 // END ELEMENT FUNCTIONS
 
 
