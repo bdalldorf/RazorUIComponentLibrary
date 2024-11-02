@@ -5,11 +5,10 @@
 -------
 
 Add the following line to ONE of these files.
-(It depends on your project), it's wherever you load your css and js files for the project.)
-Index.razor
+(It depends on your project, it's wherever you load your css and js files for the project.
+wwwroot\index.html
 App.razor
 _Host.cshtml
-
 
 -------
 <script src="_content/RazorUIComponentLibrary/js/ComponentMethods.js"></script>
