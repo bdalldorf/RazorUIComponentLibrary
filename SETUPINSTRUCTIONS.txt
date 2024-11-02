@@ -2,7 +2,6 @@
 
 -------
 @using RazorUIComponentLibrary
-@using RazorUIComponentLibrary.Components
 -------
 
 Add the following line to ONE of these files.
